@@ -17,6 +17,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -50,6 +51,9 @@ public class StockFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
+    @BindView(R.id.message)
+    TextView message;
 
     private Context mContext;
     private ItemTouchHelper mItemTouchHelper;
@@ -86,6 +90,11 @@ public class StockFragment extends Fragment implements LoaderManager.LoaderCallb
             } else {
                 networkToast();
             }
+
+            message.setVisibility(isConnected?View.GONE:View.VISIBLE);
+            recyclerView.setVisibility(!isConnected?View.GONE:View.VISIBLE);
+
+
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -107,6 +116,7 @@ public class StockFragment extends Fragment implements LoaderManager.LoaderCallb
             @Override
             public void onClick(View v) {
                 if (isConnected) {
+
                     new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
                             .content(R.string.content_test)
                             .inputType(InputType.TYPE_CLASS_TEXT)
@@ -137,6 +147,9 @@ public class StockFragment extends Fragment implements LoaderManager.LoaderCallb
                 } else {
                     networkToast();
                 }
+
+                message.setVisibility(isConnected?View.GONE:View.VISIBLE);
+                recyclerView.setVisibility(!isConnected?View.GONE:View.VISIBLE);
 
             }
         });

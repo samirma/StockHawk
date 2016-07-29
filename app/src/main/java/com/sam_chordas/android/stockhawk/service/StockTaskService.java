@@ -38,7 +38,6 @@ public class StockTaskService extends GcmTaskService {
     private String LOG_TAG = StockTaskService.class.getSimpleName();
 
     private Context mContext;
-    private StringBuilder mStoredSymbols = new StringBuilder();
 
     public StockTaskService() {
     }
@@ -51,7 +50,7 @@ public class StockTaskService extends GcmTaskService {
 
     @Override
     public int onRunTask(TaskParams params) {
-        Cursor initQueryCursor;
+
         if (mContext == null) {
             mContext = this;
         }
