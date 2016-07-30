@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.rest.Utils;
+import com.sam_chordas.android.stockhawk.rest.ResultUtil;
 
 public class MyStocksActivity extends AppCompatActivity {
 
@@ -62,7 +62,7 @@ public class MyStocksActivity extends AppCompatActivity {
 
         if (id == R.id.action_change_units) {
             // this is for changing stock changes from percent value to dollar value
-            Utils.showPercent = !Utils.showPercent;
+            ResultUtil.showPercent = !ResultUtil.showPercent;
             this.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
         }
 

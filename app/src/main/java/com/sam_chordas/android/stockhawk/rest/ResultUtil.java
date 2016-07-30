@@ -19,31 +19,23 @@ import java.util.ArrayList;
 /**
  * Created by sam_chordas on 10/8/15.
  */
-public class Utils {
+public class ResultUtil {
 
     public static boolean showPercent = true;
-    private static String LOG_TAG = Utils.class.getSimpleName();
 
-    public static ArrayList quoteJsonToContentVals(String JSON, final Stock stock) {
+    public static ArrayList quoteJsonToContentVals(final Stock stock) {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
-        JSONObject jsonObject = null;
-        JSONArray resultsArray = null;
-        try {
-            jsonObject = new JSONObject(JSON);
-            if (jsonObject != null && jsonObject.length() != 0) {
-                final Query query = stock.getQuery();
 
-                final Quote[] quotes = query.getResults().getQuote();
+        final Query query = stock.getQuery();
 
-                for (Quote quote: quotes) {
+        final Quote[] quotes = query.getResults().getQuote();
 
-                    batchOperations.add(buildBatchOperation(quote));
+        for (Quote quote: quotes) {
 
-                }
-            }
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "String to JSON failed: " + e);
+            batchOperations.add(buildBatchOperation(quote));
+
         }
+
         return batchOperations;
     }
 

@@ -15,7 +15,7 @@ import com.sam_chordas.android.stockhawk.AplicationStockHawk;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.model.Stock;
-import com.sam_chordas.android.stockhawk.rest.Utils;
+import com.sam_chordas.android.stockhawk.rest.ResultUtil;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -23,6 +23,7 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import static com.sam_chordas.android.stockhawk.service.StockTaskService.INIT;
 import static com.sam_chordas.android.stockhawk.service.StockTaskService.PERIODIC;
@@ -81,8 +82,8 @@ public class LoadStock {
                         contentResolver.update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                                 null, null);
                     }
-                    contentResolver.applyBatch(QuoteProvider.AUTHORITY,
-                            Utils.quoteJsonToContentVals(getResponse, stock));
+                    final ArrayList operations = ResultUtil.quoteJsonToContentVals(stock);
+                    contentResolver.applyBatch(QuoteProvider.AUTHORITY, operations);
                 } catch (RemoteException | OperationApplicationException e) {
                     Log.e(TAG, "Error applying batch insert", e);
                 }

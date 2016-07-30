@@ -26,9 +26,12 @@ import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperViewHolder;
 public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAdapter.ViewHolder>
         implements ItemTouchHelperAdapter {
 
+    public static final String SYMBOL = "symbol";
+    public static final String BID_PRICE = "bid_price";
+    public static final String PERCENT_CHANGE = "percent_change";
+    public static final String CHANGE = "change";
     private static Context mContext;
     private static Typeface robotoLight;
-    private boolean isPercent;
 
     public QuoteCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor);
@@ -46,30 +49,39 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final Cursor cursor) {
-        viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex("symbol")));
-        viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex("bid_price")));
-        int sdk = Build.VERSION.SDK_INT;
+        viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex(SYMBOL)));
+        viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex(BID_PRICE)));
+
+        int color;
+
         if (cursor.getInt(cursor.getColumnIndex("is_up")) == 1) {
-            if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
-                viewHolder.change.setBackgroundDrawable(
-                        mContext.getResources().getDrawable(R.drawable.percent_change_pill_green));
-            } else {
-                viewHolder.change.setBackground(
-                        mContext.getResources().getDrawable(R.drawable.percent_change_pill_green));
-            }
+            color = R.drawable.percent_change_pill_green;
         } else {
-            if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
-                viewHolder.change.setBackgroundDrawable(
-                        mContext.getResources().getDrawable(R.drawable.percent_change_pill_red));
-            } else {
-                viewHolder.change.setBackground(
-                        mContext.getResources().getDrawable(R.drawable.percent_change_pill_red));
-            }
+            color = R.drawable.percent_change_pill_red;
         }
-        if (Utils.showPercent) {
-            viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("percent_change")));
+        setBackground(viewHolder, color);
+
+
+        String text;
+
+        if (ResultUtil.showPercent) {
+           text = cursor.getString(cursor.getColumnIndex(PERCENT_CHANGE));
         } else {
-            viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("change")));
+            text = cursor.getString(cursor.getColumnIndex(CHANGE));
+        }
+        viewHolder.change.setText(text);
+
+    }
+
+    private void setBackground(ViewHolder viewHolder, int percent_change_pill_red) {
+        int sdk = Build.VERSION.SDK_INT;
+
+        if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
+            viewHolder.change.setBackgroundDrawable(
+                    mContext.getResources().getDrawable(percent_change_pill_red));
+        } else {
+            viewHolder.change.setBackground(
+                    mContext.getResources().getDrawable(percent_change_pill_red));
         }
     }
 
