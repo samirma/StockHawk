@@ -71,7 +71,7 @@ public class StockFragment extends Fragment implements LoaderManager.LoaderCallb
 
         final View rootView = inflater.inflate(R.layout.fragment_stock, container, false);
 
-        mContext = AplicationStockHawk.getContext();
+        mContext = getActivity();
 
         loaderManager = getLoaderManager();
 
@@ -130,7 +130,7 @@ public class StockFragment extends Fragment implements LoaderManager.LoaderCallb
                                             new String[]{input.toString()}, null);
                                     if (c.getCount() != 0) {
                                         Toast toast =
-                                                Toast.makeText(mContext, "This stock is already saved!",
+                                                Toast.makeText(mContext, R.string.stock_already_saved,
                                                         Toast.LENGTH_LONG);
                                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                                         toast.show();

@@ -5,6 +5,10 @@ import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.model.Query;
+import com.sam_chordas.android.stockhawk.model.Quote;
+import com.sam_chordas.android.stockhawk.model.Results;
+import com.sam_chordas.android.stockhawk.model.Stock;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,28 +24,21 @@ public class Utils {
     public static boolean showPercent = true;
     private static String LOG_TAG = Utils.class.getSimpleName();
 
-    public static ArrayList quoteJsonToContentVals(String JSON) {
+    public static ArrayList quoteJsonToContentVals(String JSON, final Stock stock) {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
         JSONObject jsonObject = null;
         JSONArray resultsArray = null;
         try {
             jsonObject = new JSONObject(JSON);
             if (jsonObject != null && jsonObject.length() != 0) {
-                jsonObject = jsonObject.getJSONObject("query");
-                int count = Integer.parseInt(jsonObject.getString("count"));
-                if (count == 1) {
-                    jsonObject = jsonObject.getJSONObject("results")
-                            .getJSONObject("quote");
-                    batchOperations.add(buildBatchOperation(jsonObject));
-                } else {
-                    resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
+                final Query query = stock.getQuery();
 
-                    if (resultsArray != null && resultsArray.length() != 0) {
-                        for (int i = 0; i < resultsArray.length(); i++) {
-                            jsonObject = resultsArray.getJSONObject(i);
-                            batchOperations.add(buildBatchOperation(jsonObject));
-                        }
-                    }
+                final Quote[] quotes = query.getResults().getQuote();
+
+                for (Quote quote: quotes) {
+
+                    batchOperations.add(buildBatchOperation(quote));
+
                 }
             }
         } catch (JSONException e) {
@@ -72,26 +69,23 @@ public class Utils {
         return change;
     }
 
-    public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
+    public static ContentProviderOperation buildBatchOperation(final Quote quote) {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
-        try {
-            String change = jsonObject.getString("Change");
-            builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
-            builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
-            builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-                    jsonObject.getString("ChangeinPercent"), true));
-            builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
-            builder.withValue(QuoteColumns.ISCURRENT, 1);
-            if (change.charAt(0) == '-') {
-                builder.withValue(QuoteColumns.ISUP, 0);
-            } else {
-                builder.withValue(QuoteColumns.ISUP, 1);
-            }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+        String change = quote.Change;
+        builder.withValue(QuoteColumns.SYMBOL, quote.symbol);
+        builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(quote.Bid));
+        builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
+                quote.ChangeinPercent, true));
+        builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
+        builder.withValue(QuoteColumns.ISCURRENT, 1);
+        if (change.charAt(0) == '-') {
+            builder.withValue(QuoteColumns.ISUP, 0);
+        } else {
+            builder.withValue(QuoteColumns.ISUP, 1);
         }
+
         return builder.build();
     }
 }
