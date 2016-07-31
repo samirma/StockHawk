@@ -25,10 +25,12 @@ import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
-import com.sam_chordas.android.stockhawk.AplicationStockHawk;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.presenter.StockPresenter;
+import com.sam_chordas.android.stockhawk.presenter.StockPresenterFactory;
+import com.sam_chordas.android.stockhawk.presenter.StockPresenterView;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
@@ -40,7 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class StockFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StockFragment extends Fragment implements StockPresenterView, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int CURSOR_LOADER_ID = 0;
     private LoaderManager loaderManager;
@@ -54,6 +56,8 @@ public class StockFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @BindView(R.id.message)
     TextView message;
+
+    StockPresenter stockPresenter;
 
     private Context mContext;
     private ItemTouchHelper mItemTouchHelper;
@@ -75,11 +79,12 @@ public class StockFragment extends Fragment implements LoaderManager.LoaderCallb
 
         loaderManager = getLoaderManager();
 
+        StockPresenterFactory.getStockPresenter(this);
+
         ButterKnife.bind(this, rootView);
 
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
-        final boolean isConnected = NetworkUtil.isConnect();
 
         mServiceIntent = new Intent(mContext, StockIntentService.class);
         if (savedInstanceState == null) {
@@ -160,25 +165,7 @@ public class StockFragment extends Fragment implements LoaderManager.LoaderCallb
 
         //mTitle = getTitle();
 
-        if (isConnected) {
-            long period = 3600L;
-            long flex = 10L;
-            String periodicTag = "periodic";
-
-            // create a periodic task to pull stocks once every hour after the app has been opened. This
-            // is so Widget data stays up to date.
-            PeriodicTask periodicTask = new PeriodicTask.Builder()
-                    .setService(StockTaskService.class)
-                    .setPeriod(period)
-                    .setFlex(flex)
-                    .setTag(periodicTag)
-                    .setRequiredNetwork(Task.NETWORK_STATE_CONNECTED)
-                    .setRequiresCharging(false)
-                    .build();
-            // Schedule task with tag "periodic." This ensure that only the stocks present in the DB
-            // are updated.
-            GcmNetworkManager.getInstance(mContext).schedule(periodicTask);
-        }
+        stockPresenter.startPresenter();
 
         return rootView;
     }
