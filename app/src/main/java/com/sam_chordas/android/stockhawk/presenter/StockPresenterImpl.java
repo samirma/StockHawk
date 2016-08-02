@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.util.NetworkUtil;
@@ -14,7 +15,7 @@ import com.sam_chordas.android.stockhawk.util.NetworkUtil;
  * Created by samir on 7/30/16.
  */
 
-public class StockPresenterImpl implements StockPresenter {
+public class StockPresenterImpl implements StockPresenter, AddStockCallBack {
     private StockPresenterView mView;
     private Context mContext;
     private Intent mServiceIntent;
@@ -82,4 +83,8 @@ public class StockPresenterImpl implements StockPresenter {
         mContext.startService(mServiceIntent);
     }
 
+    @Override
+    public void setError(Exception e) {
+        mView.showAddStockFail(mContext.getString(R.string.fail_add));
+    }
 }

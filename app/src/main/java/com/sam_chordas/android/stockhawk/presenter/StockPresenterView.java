@@ -14,4 +14,6 @@ public interface StockPresenterView {
     void enableAddStock();
 
     void networkToast();
+
+    void showAddStockFail(String s);
 }

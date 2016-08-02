@@ -1,14 +1,17 @@
 package com.sam_chordas.android.stockhawk.ui;
 
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -52,8 +55,6 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
     @BindView(R.id.message)
     TextView message;
 
-    StockPresenter stockPresenter;
-
     private Context mContext;
     private ItemTouchHelper mItemTouchHelper;
     private QuoteCursorAdapter mCursorAdapter;
@@ -82,11 +83,6 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
 
-        if (savedInstanceState == null) {
-            // Run the initialize task service so that some stocks appear upon an empty database
-            presenter.startInitService();
-
-        }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         loaderManager.initLoader(CURSOR_LOADER_ID, null, this);
@@ -118,7 +114,13 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
 
         //mTitle = getTitle();
 
-        stockPresenter.startPresenter();
+        presenter.startPresenter();
+
+        if (savedInstanceState == null) {
+            // Run the initialize task service so that some stocks appear upon an empty database
+            presenter.startInitService();
+
+        }
 
         return rootView;
     }
@@ -182,6 +184,18 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
 
     public void networkToast() {
         Toast.makeText(mContext, getString(R.string.network_toast), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showAddStockFail(final String s) {
+        showMessage(s);
+    }
+
+    public void showMessage(String s) {
+        Snackbar snackbar = Snackbar
+                .make(getView(), s, Snackbar.LENGTH_LONG);
+
+        snackbar.show();
     }
 
     @Override
