@@ -21,9 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.PeriodicTask;
-import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
@@ -33,10 +30,8 @@ import com.sam_chordas.android.stockhawk.presenter.StockPresenterFactory;
 import com.sam_chordas.android.stockhawk.presenter.StockPresenterView;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
-import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
-import com.sam_chordas.android.stockhawk.util.NetworkUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +58,7 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
     private ItemTouchHelper mItemTouchHelper;
     private QuoteCursorAdapter mCursorAdapter;
     private Cursor mCursor;
+    private StockPresenter presenter;
 
     public StockFragment() {
         // Required empty public constructor
@@ -79,26 +75,16 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
 
         loaderManager = getLoaderManager();
 
-        StockPresenterFactory.getStockPresenter(this);
+        presenter = StockPresenterFactory.getStockPresenter(this);
 
         ButterKnife.bind(this, rootView);
 
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
 
-        mServiceIntent = new Intent(mContext, StockIntentService.class);
         if (savedInstanceState == null) {
             // Run the initialize task service so that some stocks appear upon an empty database
-            mServiceIntent.putExtra(StockTaskService.TAG, StockTaskService.INIT);
-            if (isConnected) {
-                mContext.startService(mServiceIntent);
-            } else {
-                networkToast();
-            }
-
-            message.setVisibility(isConnected?View.GONE:View.VISIBLE);
-            recyclerView.setVisibility(!isConnected?View.GONE:View.VISIBLE);
-
+            presenter.startInitService();
 
         }
 
@@ -120,41 +106,8 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isConnected) {
 
-                    new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
-                            .content(R.string.content_test)
-                            .inputType(InputType.TYPE_CLASS_TEXT)
-                            .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
-                                @Override
-                                public void onInput(MaterialDialog dialog, CharSequence input) {
-                                    // On FAB click, receive user input. Make sure the stock doesn't already exist
-                                    // in the DB and proceed accordingly
-                                    Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                                            new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
-                                            new String[]{input.toString()}, null);
-                                    if (c.getCount() != 0) {
-                                        Toast toast =
-                                                Toast.makeText(mContext, R.string.stock_already_saved,
-                                                        Toast.LENGTH_LONG);
-                                        toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
-                                        toast.show();
-                                        return;
-                                    } else {
-                                        // Add the stock to DB
-                                        mServiceIntent.putExtra(StockTaskService.TAG, StockTaskService.ADD);
-                                        mServiceIntent.putExtra(StockTaskService.SYMBOL, input.toString());
-                                        mContext.startService(mServiceIntent);
-                                    }
-                                }
-                            })
-                            .show();
-                } else {
-                    networkToast();
-                }
-
-                message.setVisibility(isConnected?View.GONE:View.VISIBLE);
-                recyclerView.setVisibility(!isConnected?View.GONE:View.VISIBLE);
+                presenter.addStockRequired();
 
             }
         });
@@ -169,6 +122,44 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
 
         return rootView;
     }
+
+
+
+    @Override
+    public void showMessage(boolean showMessage) {
+        message.setVisibility(showMessage? View.GONE:View.VISIBLE);
+        recyclerView.setVisibility(!showMessage?View.GONE:View.VISIBLE);
+    }
+
+    @Override
+    public void enableAddStock() {
+        new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
+                .content(R.string.content_test)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        // On FAB click, receive user input. Make sure the stock doesn't already exist
+                        // in the DB and proceed accordingly
+                        Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                                new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
+                                new String[]{input.toString()}, null);
+                        if (c.getCount() != 0) {
+                            Toast toast =
+                                    Toast.makeText(mContext, R.string.stock_already_saved,
+                                            Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
+                            toast.show();
+                            return;
+                        } else {
+                            // Add the stock to DB
+                            presenter.addStock(input);
+                        }
+                    }
+                })
+                .show();
+    }
+
 
 
     @Override

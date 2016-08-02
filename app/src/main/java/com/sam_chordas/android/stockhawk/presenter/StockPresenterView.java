@@ -8,4 +8,10 @@ import android.content.Context;
 
 public interface StockPresenterView {
     Context getContext();
+
+    void showMessage(boolean showMessage);
+
+    void enableAddStock();
+
+    void networkToast();
 }

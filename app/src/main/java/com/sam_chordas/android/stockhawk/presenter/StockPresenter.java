@@ -6,4 +6,10 @@ package com.sam_chordas.android.stockhawk.presenter;
 
 public interface StockPresenter {
     void startPresenter();
+
+    void addStockRequired();
+
+    void startInitService();
+
+    void addStock(CharSequence input);
 }

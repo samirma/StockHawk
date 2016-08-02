@@ -1,10 +1,12 @@
 package com.sam_chordas.android.stockhawk.presenter;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
+import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.util.NetworkUtil;
 
@@ -15,6 +17,7 @@ import com.sam_chordas.android.stockhawk.util.NetworkUtil;
 public class StockPresenterImpl implements StockPresenter {
     private StockPresenterView mView;
     private Context mContext;
+    private Intent mServiceIntent;
 
     public void setView(final StockPresenterView view) {
         this.mView = view;
@@ -23,6 +26,10 @@ public class StockPresenterImpl implements StockPresenter {
 
     @Override
     public void startPresenter() {
+
+        mServiceIntent = new Intent(mContext, StockIntentService.class);
+
+
         if (NetworkUtil.isConnect()) {
             long period = 3600L;
             long flex = 10L;
@@ -42,6 +49,37 @@ public class StockPresenterImpl implements StockPresenter {
             // are updated.
             GcmNetworkManager.getInstance(mContext).schedule(periodicTask);
         }
+    }
+
+    @Override
+    public void addStockRequired() {
+        final boolean isConnected = NetworkUtil.isConnect();
+        if (isConnected) {
+            mView.enableAddStock();
+        } else {
+            mView.networkToast();
+        }
+        mView.showMessage(isConnected);
+    }
+
+    @Override
+    public void startInitService() {
+        mServiceIntent.putExtra(StockTaskService.TAG, StockTaskService.INIT);
+        final boolean isConnected = NetworkUtil.isConnect();
+        if (isConnected) {
+            mContext.startService(mServiceIntent);
+        } else {
+            mView.networkToast();
+        }
+
+        mView.showMessage(isConnected);
+    }
+
+    @Override
+    public void addStock(CharSequence input) {
+        mServiceIntent.putExtra(StockTaskService.TAG, StockTaskService.ADD);
+        mServiceIntent.putExtra(StockTaskService.SYMBOL, input.toString());
+        mContext.startService(mServiceIntent);
     }
 
 }
