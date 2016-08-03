@@ -49,10 +49,11 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final Cursor cursor) {
-        viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex(SYMBOL)));
+        final String stockName = cursor.getString(cursor.getColumnIndex(SYMBOL));
+        viewHolder.symbol.setText(stockName);
         viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex(BID_PRICE)));
 
-        int color;
+        final int color;
 
         if (cursor.getInt(cursor.getColumnIndex("is_up")) == 1) {
             color = R.drawable.percent_change_pill_green;
@@ -62,7 +63,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         setBackground(viewHolder, color);
 
 
-        String text;
+        final String text;
 
         if (ResultUtil.showPercent) {
            text = cursor.getString(cursor.getColumnIndex(PERCENT_CHANGE));
@@ -70,6 +71,8 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
             text = cursor.getString(cursor.getColumnIndex(CHANGE));
         }
         viewHolder.change.setText(text);
+
+        viewHolder.itemView.setContentDescription(String.format("select %s", stockName));
 
     }
 
