@@ -1,12 +1,10 @@
-package com.sam_chordas.android.stockhawk.ui;
+package com.sam_chordas.android.stockhawk.ui.fragments;
 
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -33,7 +31,6 @@ import com.sam_chordas.android.stockhawk.presenter.StockPresenterFactory;
 import com.sam_chordas.android.stockhawk.presenter.StockPresenterView;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
-import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
 import butterknife.BindView;
@@ -43,6 +40,7 @@ import butterknife.ButterKnife;
 public class StockFragment extends Fragment implements StockPresenterView, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int CURSOR_LOADER_ID = 0;
+    public static final String TAG = StockFragment.class.getSimpleName();
     private LoaderManager loaderManager;
     private Intent mServiceIntent;
 
@@ -92,8 +90,9 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int position) {
-                        //TODO:
-                        // do something on item click
+                        final Cursor cursor = mCursorAdapter.getCursor();
+                        cursor.moveToPosition(position);
+                        presenter.selectStock(cursor);
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);

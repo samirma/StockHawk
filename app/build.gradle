@@ -33,7 +33,7 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
-    compile 'com.google.android.gms:play-services-gcm:9.2.1'
+    compile 'com.google.android.gms:play-services-gcm:9.4.0'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'net.simonvt.schematic:schematic:0.6.3'
     compile 'com.melnykov:floatingactionbutton:1.2.0'
