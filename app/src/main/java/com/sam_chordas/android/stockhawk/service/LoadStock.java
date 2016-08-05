@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
@@ -81,6 +82,7 @@ public class LoadStock {
                         contentValues.put(QuoteColumns.ISCURRENT, 0);
                         contentResolver.update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                                 null, null);
+                        new UpdateService().save();
                     }
                     final ArrayList operations = ResultUtil.quoteJsonToContentVals(stock);
                     contentResolver.applyBatch(QuoteProvider.AUTHORITY, operations);
