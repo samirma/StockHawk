@@ -8,9 +8,11 @@ import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.ui.StockDetailActivity;
+import com.sam_chordas.android.stockhawk.ui.fragments.StockDetailFragment;
 import com.sam_chordas.android.stockhawk.util.NetworkUtil;
 
 /**
@@ -88,6 +90,7 @@ public class StockPresenterImpl implements StockPresenter, AddStockCallBack {
     @Override
     public void selectStock(Cursor cursor) {
         final Intent intent = new Intent(mContext, StockDetailActivity.class);
+        intent.putExtra(StockDetailFragment.STOCK_ID, cursor.getString(cursor.getColumnIndex(QuoteCursorAdapter.SYMBOL)));
         mContext.startActivity(intent);
     }
 
