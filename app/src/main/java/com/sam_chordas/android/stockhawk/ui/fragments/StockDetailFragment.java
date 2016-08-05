@@ -43,7 +43,7 @@ public class StockDetailFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        final String imgPath = String.format("http://chart.finance.yahoo.com/z?s=%s&t=6m&q=l&l=on&z=s&p=m50,m200", stockId);
+        final String imgPath = String.format("http://chart.finance.yahoo.com/z?s=%s&t=6m&q=l&l=on&z=l&p=m50,m200", stockId);
         Picasso.with(getActivity()).load(imgPath).into(graph);
         return view;
     }
