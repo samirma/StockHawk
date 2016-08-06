@@ -1,4 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Stock Hawk</string>
+    <string name= "action_settings"> الإعدادات </string>
+    <string name= "action_change_units"> تغيير وحدات </string>
+    <string name= "symbol_search"> رمز البحث </string>
+    <string name= "content_test"> بحث لاسهم رمز </string>
+    <string name= "input_hint"> FB </string>
+    <string name= "input_prefill"> </string>
+    <string name= "network_toast"> أه أوه! هذا التطبيق يتطلب اتصال بالإنترنت </string>
+
+    <string name= "hello_blank_fragment"> مرحبا جزء فارغ </string>
+    <string name= "stock_already_saved"> يتم حفظ هذه الأسهم بالفعل! </string>
+    <string name= "fail_add"> فشل لإضافة الأسهم الجديدة </string>
+    <string name= "add_new_stock"> إضافة الأسهم الجديدة </string>
+    <string name= "out_of_date"> أسعار الأسهم قديما </string>
 </resources>
+
+
