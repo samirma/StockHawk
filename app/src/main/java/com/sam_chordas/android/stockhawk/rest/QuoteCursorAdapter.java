@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.presenter.StockPresenter;
 import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperAdapter;
 import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperViewHolder;
 
@@ -30,12 +31,14 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     public static final String BID_PRICE = "bid_price";
     public static final String PERCENT_CHANGE = "percent_change";
     public static final String CHANGE = "change";
-    private static Context mContext;
+    private Context mContext;
     private static Typeface robotoLight;
+    private final StockPresenter mPresenter;
 
-    public QuoteCursorAdapter(Context context, Cursor cursor) {
+    public QuoteCursorAdapter(Context context, Cursor cursor, StockPresenter presenter) {
         super(context, cursor);
         mContext = context;
+        mPresenter = presenter;
     }
 
     @Override
@@ -99,7 +102,8 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
     @Override
     public int getItemCount() {
-        return super.getItemCount();
+        final int itemCount = super.getItemCount();
+        return itemCount;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder

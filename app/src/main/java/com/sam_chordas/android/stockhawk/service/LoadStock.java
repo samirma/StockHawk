@@ -38,6 +38,7 @@ public class LoadStock {
     private StringBuilder mStoredSymbols = new StringBuilder();
 
     private OkHttpClient client = new OkHttpClient();
+    private UpdateService updateService;
 
     public LoadStock(String tag, String stockInput) {
         this.tag = tag;
@@ -82,7 +83,8 @@ public class LoadStock {
                         contentValues.put(QuoteColumns.ISCURRENT, 0);
                         contentResolver.update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                                 null, null);
-                        new UpdateService().save();
+                        updateService = new UpdateService();
+                        updateService.save(stock.getQuery().getCreated());
                     }
                     final ArrayList operations = ResultUtil.quoteJsonToContentVals(stock);
                     contentResolver.applyBatch(QuoteProvider.AUTHORITY, operations);

@@ -1,53 +1,45 @@
 package com.sam_chordas.android.stockhawk.model;
 
-public class Query
-{
+import java.util.Date;
+
+public class Query {
     private Results results;
 
     private String count;
 
-    private String created;
-
+    private Date created;
 
     private String lang;
 
-    public Results getResults ()
-    {
+    public Results getResults() {
         return results;
     }
 
-    public void setResults (Results results)
-    {
+    public void setResults(Results results) {
         this.results = results;
     }
 
-    public String getCount ()
-    {
+    public String getCount() {
         return count;
     }
 
-    public void setCount (String count)
-    {
+    public void setCount(String count) {
         this.count = count;
     }
 
-    public String getCreated ()
-    {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated (String created)
-    {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public String getLang ()
-    {
+    public String getLang() {
         return lang;
     }
 
-    public void setLang (String lang)
-    {
+    public void setLang(String lang) {
         this.lang = lang;
     }
 

@@ -16,4 +16,6 @@ public interface StockPresenter {
     void addStock(CharSequence input);
 
     void selectStock(Cursor cursor);
+
+    void reloadStocks();
 }

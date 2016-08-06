@@ -16,4 +16,5 @@
     <string name="stock_already_saved">This stock is already saved!</string>
     <string name="fail_add">Fail to add a new stock</string>
     <string name="add_new_stock">Add new stock</string>
+    <string name="out_of_date">Stock quotes are out of date</string>
 </resources>

@@ -4,9 +4,7 @@ package com.sam_chordas.android.stockhawk.ui.fragments;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -37,9 +35,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class StockFragment extends Fragment implements StockPresenterView, LoaderManager.LoaderCallbacks<Cursor> {
+public class StockFragment extends Fragment implements StockPresenterView {
 
-    private static final int CURSOR_LOADER_ID = 0;
     public static final String TAG = StockFragment.class.getSimpleName();
     private LoaderManager loaderManager;
     private Intent mServiceIntent;
@@ -50,13 +47,15 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    @BindView(R.id.message)
-    TextView message;
+    @BindView(R.id.no_network)
+    TextView noNetwork;
+
+    @BindView(R.id.out_of_date)
+    TextView outOfDate;
 
     private Context mContext;
     private ItemTouchHelper mItemTouchHelper;
     private QuoteCursorAdapter mCursorAdapter;
-    private Cursor mCursor;
     private StockPresenter presenter;
 
     public StockFragment() {
@@ -72,8 +71,6 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
 
         mContext = getActivity();
 
-        loaderManager = getLoaderManager();
-
         presenter = StockPresenterFactory.getStockPresenter(this);
 
         ButterKnife.bind(this, rootView);
@@ -83,9 +80,8 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        loaderManager.initLoader(CURSOR_LOADER_ID, null, this);
 
-        mCursorAdapter = new QuoteCursorAdapter(mContext, null);
+        mCursorAdapter = new QuoteCursorAdapter(mContext, null, presenter);
         recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(mContext,
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override
@@ -124,16 +120,8 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
         return rootView;
     }
 
-
-
     @Override
-    public void showMessage(boolean showMessage) {
-        message.setVisibility(showMessage? View.GONE:View.VISIBLE);
-        recyclerView.setVisibility(!showMessage?View.GONE:View.VISIBLE);
-    }
-
-    @Override
-    public void enableAddStock() {
+    public void getStockName() {
         new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
                 .content(R.string.content_test)
                 .inputType(InputType.TYPE_CLASS_TEXT)
@@ -162,23 +150,10 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
     }
 
 
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // This narrows the return to only the stocks that are most current.
-        return new CursorLoader(mContext, QuoteProvider.Quotes.CONTENT_URI,
-                new String[]{QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE,
-                        QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP},
-                QuoteColumns.ISCURRENT + " = ?",
-                new String[]{"1"},
-                null);
-    }
-
-
     @Override
     public void onResume() {
         super.onResume();
-        loaderManager.restartLoader(CURSOR_LOADER_ID, null, this);
+        presenter.reloadStocks();
     }
 
     public void networkToast() {
@@ -190,22 +165,61 @@ public class StockFragment extends Fragment implements StockPresenterView, Loade
         showMessage(s);
     }
 
+    @Override
+    public void resetData() {
+        mCursorAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void setData(Cursor data) {
+        mCursorAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void showStockList() {
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showDatedMessage() {
+        outOfDate.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideDatedMessage() {
+        outOfDate.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideStockList() {
+        recyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideAddStock() {
+        fab.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void enableAddStock() {
+        fab.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showNoNetworkMessage() {
+        noNetwork.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideNoNetworkMessage() {
+        noNetwork.setVisibility(View.GONE);
+    }
+
     public void showMessage(String s) {
         Snackbar snackbar = Snackbar
                 .make(getView(), s, Snackbar.LENGTH_LONG);
 
         snackbar.show();
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursorAdapter.swapCursor(data);
-        mCursor = data;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mCursorAdapter.swapCursor(null);
     }
 
 
