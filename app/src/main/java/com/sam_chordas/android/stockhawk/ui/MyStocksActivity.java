@@ -1,6 +1,7 @@
 package com.sam_chordas.android.stockhawk.ui;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,7 @@ import butterknife.ButterKnife;
 
 public class MyStocksActivity extends AppCompatActivity {
 
+    public static final String SHOW_PERCENT = "showPercent";
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -35,6 +37,10 @@ public class MyStocksActivity extends AppCompatActivity {
         restoreActionBar();
 
         mTitle = getTitle();
+
+        if (savedInstanceState != null) {
+            ResultUtil.showPercent = savedInstanceState.getBoolean(SHOW_PERCENT);
+        }
 
     }
 
@@ -77,4 +83,9 @@ public class MyStocksActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SHOW_PERCENT,ResultUtil.showPercent);
+    }
 }

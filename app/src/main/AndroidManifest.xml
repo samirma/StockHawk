@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.StockDetailActivity"
+        <activity android:name=".ui.StockDetailActivity" android:screenOrientation="landscape"
             android:parentActivityName=".ui.MyStocksActivity">
         </activity>
 

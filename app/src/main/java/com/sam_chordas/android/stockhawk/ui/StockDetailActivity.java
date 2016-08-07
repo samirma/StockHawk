@@ -1,5 +1,6 @@
 package com.sam_chordas.android.stockhawk.ui;
 
+import android.os.PersistableBundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,7 +25,11 @@ public class StockDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        stock = getIntent().getExtras().getString(StockDetailFragment.STOCK_ID);
+        if (savedInstanceState != null) {
+            stock = savedInstanceState.getString(StockDetailFragment.STOCK_ID);
+        } else {
+            stock = getIntent().getExtras().getString(StockDetailFragment.STOCK_ID);
+        }
 
         restoreActionBar();
 
@@ -51,5 +56,11 @@ public class StockDetailActivity extends AppCompatActivity {
         supportActionBar.setDisplayHomeAsUpEnabled(true);
         supportActionBar.setDisplayShowTitleEnabled(true);
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putString(StockDetailFragment.STOCK_ID, stock);
     }
 }
