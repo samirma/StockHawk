@@ -1,14 +1,29 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context="com.sam_chordas.android.stockhawk.ui.StockDetailActivity">
+android:layout_height="wrap_content">
+
+<android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:scaleType="center"/>
+</android.support.v7.widget.Toolbar>
 
 
 <fragment
+    android:id="@+id/fragment"
+    android:name="com.sam_chordas.android.stockhawk.ui.fragments.StockDetailFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="com.sam_chordas.android.stockhawk.ui.fragments.StockDetailFragment"
-    android:id="@+id/fragment" />
+    tools:context="com.sam_chordas.android.stockhawk.ui.fragments.StockDetailFragment"
+    android:layout_below="@+id/toolbar"
+    android:layout_alignParentBottom="true"
+    tools:layout="@layout/fragment_stock_detail" />
 
-</FrameLayout>
+</RelativeLayout>

@@ -150,12 +150,6 @@ public class StockFragment extends Fragment implements StockPresenterView {
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        presenter.reloadStocks();
-    }
-
     public void networkToast() {
         Toast.makeText(mContext, getString(R.string.network_toast), Toast.LENGTH_SHORT).show();
     }
