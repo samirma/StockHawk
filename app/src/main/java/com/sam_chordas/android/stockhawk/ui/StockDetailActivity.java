@@ -24,6 +24,8 @@ public class StockDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        stock = getIntent().getExtras().getString(StockDetailFragment.STOCK_ID);
+
         restoreActionBar();
 
         // Create a new Fragment to be placed in the activity layout
@@ -32,7 +34,6 @@ public class StockDetailActivity extends AppCompatActivity {
         // In case this activity was started with special instructions from an
         // Intent, pass the Intent's extras to the fragment as arguments
         final Bundle extras = getIntent().getExtras();
-        stock = getIntent().getExtras().getString(StockDetailFragment.STOCK_ID);
         extras.putString(StockDetailFragment.STOCK_ID, stock);
         firstFragment.setArguments(extras);
 
@@ -43,11 +44,12 @@ public class StockDetailActivity extends AppCompatActivity {
     }
 
     public void restoreActionBar() {
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setTitle(stock);
         final ActionBar supportActionBar = getSupportActionBar();
         supportActionBar.setDisplayHomeAsUpEnabled(true);
+        supportActionBar.setDisplayShowTitleEnabled(true);
 
     }
 }
