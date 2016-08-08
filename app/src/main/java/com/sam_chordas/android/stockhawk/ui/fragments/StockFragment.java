@@ -120,23 +120,33 @@ public class StockFragment extends Fragment implements StockPresenterView {
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
                     @Override
-                    public void onInput(MaterialDialog dialog, CharSequence input) {
-                        // On FAB click, receive user input. Make sure the stock doesn't already exist
-                        // in the DB and proceed accordingly
-                        Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                                new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
-                                new String[]{input.toString()}, null);
-                        if (c.getCount() != 0) {
-                            Toast toast =
-                                    Toast.makeText(mContext, R.string.stock_already_saved,
-                                            Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
-                            toast.show();
-                            return;
-                        } else {
-                            // Add the stock to DB
-                            presenter.addStock(input);
-                        }
+                    public void onInput(MaterialDialog dialog, final CharSequence input) {
+                        new Thread(){
+                            @Override
+                            public void run() {
+                                // On FAB click, receive user input. Make sure the stock doesn't already exist
+                                // in the DB and proceed accordingly
+                                Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                                        new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
+                                        new String[]{input.toString()}, null);
+                                if (c.getCount() != 0) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast toast =
+                                                    Toast.makeText(mContext, R.string.stock_already_saved,
+                                                            Toast.LENGTH_LONG);
+                                            toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
+                                            toast.show();
+                                        }
+                                    });
+                                    return;
+                                } else {
+                                    // Add the stock to DB
+                                    presenter.addStock(input);
+                                }
+                            }
+                        }.start();
                     }
                 })
                 .show();

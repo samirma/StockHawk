@@ -13,6 +13,8 @@ import com.sam_chordas.android.stockhawk.presenter.StockPresenterFactory;
  */
 public class StockIntentService extends IntentService {
 
+    public static final String TAG = StockIntentService.class.getSimpleName();
+
     public StockIntentService() {
         super(StockIntentService.class.getName());
     }
@@ -35,6 +37,7 @@ public class StockIntentService extends IntentService {
         try {
             stockTaskService.onRunTask(new TaskParams(tag, args));
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
             StockPresenterFactory.getAddStockCallBack().setError(e);
         }
     }
