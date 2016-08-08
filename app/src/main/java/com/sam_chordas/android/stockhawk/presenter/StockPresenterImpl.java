@@ -8,6 +8,10 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
+import android.view.View;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
@@ -104,10 +108,15 @@ public class StockPresenterImpl implements StockPresenter, AddStockCallBack, Loa
     }
 
     @Override
-    public void selectStock(Cursor cursor) {
+    public void selectStock(Cursor cursor, View v) {
         final Intent intent = new Intent(mContext, StockDetailActivity.class);
         intent.putExtra(StockDetailFragment.STOCK_ID, cursor.getString(cursor.getColumnIndex(QuoteCursorAdapter.SYMBOL)));
-        mContext.startActivity(intent);
+
+        ActivityOptionsCompat activityOptions =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(((Activity) mContext));
+
+
+        ActivityCompat.startActivity(((Activity)mContext), intent, activityOptions.toBundle());
     }
 
     @Override

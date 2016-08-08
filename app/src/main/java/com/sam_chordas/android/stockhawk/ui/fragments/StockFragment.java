@@ -38,10 +38,6 @@ import butterknife.ButterKnife;
 
 public class StockFragment extends Fragment implements StockPresenterView {
 
-    public static final String TAG = StockFragment.class.getSimpleName();
-    private LoaderManager loaderManager;
-    private Intent mServiceIntent;
-
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -76,10 +72,6 @@ public class StockFragment extends Fragment implements StockPresenterView {
 
         ButterKnife.bind(this, rootView);
 
-        // The intent service is for executing immediate pulls from the Yahoo API
-        // GCMTaskService can only schedule tasks, they cannot execute immediately
-
-
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         mCursorAdapter = new QuoteCursorAdapter(mContext, null, presenter);
@@ -89,7 +81,7 @@ public class StockFragment extends Fragment implements StockPresenterView {
                     public void onItemClick(View v, int position) {
                         final Cursor cursor = mCursorAdapter.getCursor();
                         cursor.moveToPosition(position);
-                        presenter.selectStock(cursor);
+                        presenter.selectStock(cursor, v);
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);
