@@ -15,4 +15,7 @@
     <string name="fail_add">Fail to add a new stock</string>
     <string name="add_new_stock">Add new stock</string>
     <string name="out_of_date">Stock quotes are out of date</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
 </resources>
