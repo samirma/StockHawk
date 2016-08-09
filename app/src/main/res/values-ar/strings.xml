@@ -5,7 +5,7 @@
     <string name= "content_test"> بحث لاسهم رمز </string>
     <string name= "input_hint"> FB </string>
     <string name= "input_prefill"> </string>
-    <string name= "network_toast"> أه أوه! هذا التطبيق يتطلب اتصال بالإنترنت </string>
+    <string name="no_network"> أه أوه! هذا التطبيق يتطلب اتصال بالإنترنت </string>
 
     <string name= "hello_blank_fragment"> مرحبا جزء فارغ </string>
     <string name= "stock_already_saved"> يتم حفظ هذه الأسهم بالفعل! </string>

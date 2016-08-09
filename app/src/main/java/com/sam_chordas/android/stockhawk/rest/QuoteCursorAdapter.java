@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sam_chordas.android.stockhawk.R;
-import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.presenter.StockPresenter;
 import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperAdapter;
@@ -20,6 +20,11 @@ import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperViewHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.sam_chordas.android.stockhawk.data.QuoteColumns.BIDPRICE;
+import static com.sam_chordas.android.stockhawk.data.QuoteColumns.CHANGE;
+import static com.sam_chordas.android.stockhawk.data.QuoteColumns.PERCENT_CHANGE;
+import static com.sam_chordas.android.stockhawk.data.QuoteColumns.SYMBOL;
 
 /**
  * Created by sam_chordas on 10/6/15.
@@ -30,18 +35,13 @@ import butterknife.ButterKnife;
 public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAdapter.ViewHolder>
         implements ItemTouchHelperAdapter {
 
-    public static final String SYMBOL = "symbol";
-    public static final String BID_PRICE = "bid_price";
-    public static final String PERCENT_CHANGE = "percent_change";
-    public static final String CHANGE = "change";
+
     private Context mContext;
     private static Typeface robotoLight;
-    private final StockPresenter mPresenter;
 
     public QuoteCursorAdapter(Context context, Cursor cursor, StockPresenter presenter) {
         super(context, cursor);
         mContext = context;
-        mPresenter = presenter;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     public void onBindViewHolder(final ViewHolder viewHolder, final Cursor cursor) {
         final String stockName = cursor.getString(cursor.getColumnIndex(SYMBOL));
         viewHolder.symbol.setText(stockName);
-        viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex(BID_PRICE)));
+        viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex(BIDPRICE)));
 
         final int color;
 
@@ -85,12 +85,13 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     private void setBackground(ViewHolder viewHolder, int percent_change_pill_red) {
         int sdk = Build.VERSION.SDK_INT;
 
+        final Drawable drawable = mContext.getResources().getDrawable(percent_change_pill_red);
         if (sdk < Build.VERSION_CODES.JELLY_BEAN) {
             viewHolder.change.setBackgroundDrawable(
-                    mContext.getResources().getDrawable(percent_change_pill_red));
+                    drawable);
         } else {
             viewHolder.change.setBackground(
-                    mContext.getResources().getDrawable(percent_change_pill_red));
+                    drawable);
         }
     }
 
@@ -98,7 +99,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     public void onItemDismiss(int position) {
         Cursor c = getCursor();
         c.moveToPosition(position);
-        String symbol = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
+        String symbol = c.getString(c.getColumnIndex(SYMBOL));
         mContext.getContentResolver().delete(QuoteProvider.Quotes.withSymbol(symbol), null, null);
         notifyItemRemoved(position);
     }

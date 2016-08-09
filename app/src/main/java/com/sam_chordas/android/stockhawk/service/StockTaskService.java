@@ -6,6 +6,8 @@ import android.os.Bundle;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 
+import static com.sam_chordas.android.stockhawk.data.QuoteColumns.SYMBOL;
+
 /**
  * Created by sam_chordas on 9/30/15.
  * The GCMTask service is primarily for periodic tasks. However, OnRunTask can be called directly
@@ -14,7 +16,6 @@ import com.google.android.gms.gcm.TaskParams;
 public class StockTaskService extends GcmTaskService {
     public static final String PERIODIC = "periodic";
     public static final String INIT = "init";
-    public static final String SYMBOL = "symbol";
     public static final String ADD = "add";
     public static final String TAG = "tag";
     private String LOG_TAG = StockTaskService.class.getSimpleName();
@@ -45,7 +46,8 @@ public class StockTaskService extends GcmTaskService {
         }
 
 
-        return new LoadStock(tag, stockInput).invoke();
+        LoadStock loadStock = new LoadStock(tag, stockInput);
+        return loadStock.updateFromServer();
     }
 
 

@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -26,6 +25,8 @@ import com.sam_chordas.android.stockhawk.service.UpdateService;
 import com.sam_chordas.android.stockhawk.ui.StockDetailActivity;
 import com.sam_chordas.android.stockhawk.ui.fragments.StockDetailFragment;
 import com.sam_chordas.android.stockhawk.util.NetworkUtil;
+
+import static com.sam_chordas.android.stockhawk.data.QuoteColumns.SYMBOL;
 
 /**
  * Created by samir on 7/30/16.
@@ -49,7 +50,7 @@ public class StockPresenterImpl implements StockPresenter, AddStockCallBack, Loa
     @Override
     public void startPresenter() {
 
-        loaderManager = ((Activity)mContext).getLoaderManager();
+        loaderManager = ((Activity) mContext).getLoaderManager();
 
         loaderManager.initLoader(CURSOR_LOADER_ID, null, this);
 
@@ -103,20 +104,20 @@ public class StockPresenterImpl implements StockPresenter, AddStockCallBack, Loa
     @Override
     public void addStock(CharSequence input) {
         mServiceIntent.putExtra(StockTaskService.TAG, StockTaskService.ADD);
-        mServiceIntent.putExtra(StockTaskService.SYMBOL, input.toString());
+        mServiceIntent.putExtra(SYMBOL, input.toString());
         mContext.startService(mServiceIntent);
     }
 
     @Override
     public void selectStock(Cursor cursor, View v) {
         final Intent intent = new Intent(mContext, StockDetailActivity.class);
-        intent.putExtra(StockDetailFragment.STOCK_ID, cursor.getString(cursor.getColumnIndex(QuoteCursorAdapter.SYMBOL)));
+        intent.putExtra(StockDetailFragment.STOCK_ID, cursor.getString(cursor.getColumnIndex(SYMBOL)));
 
         ActivityOptionsCompat activityOptions =
                 ActivityOptionsCompat.makeSceneTransitionAnimation(((Activity) mContext));
 
 
-        ActivityCompat.startActivity(((Activity)mContext), intent, activityOptions.toBundle());
+        ActivityCompat.startActivity(((Activity) mContext), intent, activityOptions.toBundle());
     }
 
     @Override
@@ -165,7 +166,7 @@ public class StockPresenterImpl implements StockPresenter, AddStockCallBack, Loa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This narrows the return to only the stocks that are most current.
         return new CursorLoader(mContext, QuoteProvider.Quotes.CONTENT_URI,
-                new String[]{QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE,
+                new String[]{QuoteColumns.ID, SYMBOL, QuoteColumns.BIDPRICE,
                         QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP},
                 QuoteColumns.ISCURRENT + " = ?",
                 new String[]{"1"},

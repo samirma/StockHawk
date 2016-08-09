@@ -32,7 +32,7 @@
         <activity
             android:name=".ui.StockDetailActivity"
             android:parentActivityName=".ui.MyStocksActivity"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
 
         <service
             android:name=".service.StockTaskService"
@@ -49,6 +49,21 @@
             android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"
             android:exported="false" />
 
+        <receiver android:name=".widget.StockHawkAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.sam_chordas.android.stockhawk.widget.ACTION_DATA_UPDATED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stock_hawk_app_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.DetailWidgetRemoteViewsService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
     </application>
 

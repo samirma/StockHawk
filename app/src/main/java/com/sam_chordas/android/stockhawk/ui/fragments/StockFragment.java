@@ -2,13 +2,10 @@ package com.sam_chordas.android.stockhawk.ui.fragments;
 
 
 import android.app.Fragment;
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -154,7 +151,7 @@ public class StockFragment extends Fragment implements StockPresenterView {
 
 
     public void networkToast() {
-        Toast.makeText(mContext, getString(R.string.network_toast), Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, getString(R.string.no_network), Toast.LENGTH_SHORT).show();
     }
 
     @Override
