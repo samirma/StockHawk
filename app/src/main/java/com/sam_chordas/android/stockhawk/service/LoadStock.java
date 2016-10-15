@@ -11,7 +11,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
-import com.sam_chordas.android.stockhawk.AplicationStockHawk;
+import com.sam_chordas.android.stockhawk.ApplicationStockHawk;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.ResultUtil;
@@ -31,7 +31,7 @@ import static com.sam_chordas.android.stockhawk.widget.StockHawkAppWidget.ACTION
 
 public class LoadStock {
     public static final String TAG = LoadStock.class.getSimpleName();
-    private Context mContext = AplicationStockHawk.getContext();
+    private Context mContext = ApplicationStockHawk.getContext();
     ;
     private String tag;
     private String stockInput;

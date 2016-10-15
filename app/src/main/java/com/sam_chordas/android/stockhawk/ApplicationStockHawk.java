@@ -6,7 +6,7 @@ import android.content.Context;
 /**
  * Created by samir on 7/28/16.
  */
-public class AplicationStockHawk extends Application {
+public class ApplicationStockHawk extends Application {
     private static Context context = null;
 
     @Override

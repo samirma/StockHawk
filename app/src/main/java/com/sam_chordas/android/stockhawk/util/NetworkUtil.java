@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.sam_chordas.android.stockhawk.AplicationStockHawk;
+import com.sam_chordas.android.stockhawk.ApplicationStockHawk;
 
 /**
  * Created by samir on 7/28/16.
@@ -12,7 +12,7 @@ import com.sam_chordas.android.stockhawk.AplicationStockHawk;
 
 public class NetworkUtil {
 
-    public static final ConnectivityManager SYSTEM_SERVICE = (ConnectivityManager) AplicationStockHawk.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static final ConnectivityManager SYSTEM_SERVICE = (ConnectivityManager) ApplicationStockHawk.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
     public static boolean isConnect() {
         ConnectivityManager cm =

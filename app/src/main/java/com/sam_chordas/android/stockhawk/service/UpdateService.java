@@ -2,7 +2,7 @@ package com.sam_chordas.android.stockhawk.service;
 
 import android.content.SharedPreferences;
 
-import com.sam_chordas.android.stockhawk.AplicationStockHawk;
+import com.sam_chordas.android.stockhawk.ApplicationStockHawk;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import java.util.Date;
 public class UpdateService {
 
     public static final String UPDATE_SERVICE = "UPDATE_SERVICE";
-    public static final SharedPreferences SHARED_PREFERENCES = AplicationStockHawk.getContext().getSharedPreferences(UPDATE_SERVICE, 0);
+    public static final SharedPreferences SHARED_PREFERENCES = ApplicationStockHawk.getContext().getSharedPreferences(UPDATE_SERVICE, 0);
     public static final String LAST_UPDATE_KEY = "LAST_UPDATE_KEY";
     public static final int DATED_TIMEOUT = 1000 * 60 * 60;
 
